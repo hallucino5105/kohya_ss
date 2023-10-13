@@ -1,9 +1,12 @@
 import argparse
 import torch
+
 try:
     import intel_extension_for_pytorch as ipex
+
     if torch.xpu.is_available():
         from library.ipex import ipex_init
+
         ipex_init()
 except Exception:
     pass
@@ -41,7 +44,9 @@ class SdxlNetworkTrainer(train_network.NetworkTrainer):
             unet,
             logit_scale,
             ckpt_info,
-        ) = sdxl_train_util.load_target_model(args, accelerator, sdxl_model_util.MODEL_VERSION_SDXL_BASE_V1_0, weight_dtype)
+        ) = sdxl_train_util.load_target_model(
+            args, accelerator, sdxl_model_util.MODEL_VERSION_SDXL_BASE_V1_0, weight_dtype
+        )
 
         self.load_stable_diffusion_format = load_stable_diffusion_format
         self.logit_scale = logit_scale
@@ -153,7 +158,9 @@ class SdxlNetworkTrainer(train_network.NetworkTrainer):
         orig_size = batch["original_sizes_hw"]
         crop_size = batch["crop_top_lefts"]
         target_size = batch["target_sizes_hw"]
-        embs = sdxl_train_util.get_size_embeddings(orig_size, crop_size, target_size, accelerator.device).to(weight_dtype)
+        embs = sdxl_train_util.get_size_embeddings(orig_size, crop_size, target_size, accelerator.device).to(
+            weight_dtype
+        )
 
         # concat embeddings
         encoder_hidden_states1, encoder_hidden_states2, pool2 = text_conds
